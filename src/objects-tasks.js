@@ -33,8 +33,38 @@ function shallowCopy(obj) {
  *    mergeObjects([{a: 1, b: 2}, {b: 3, c: 5}]) => {a: 1, b: 5, c: 5}
  *    mergeObjects([]) => {}
  */
-function mergeObjects(/* objects */) {
-  throw new Error('Not implemented');
+function mergeObjects(objects) {
+  let result1;
+  if (objects.length === 0) {
+    result1 = {};
+  }
+  if (objects.length === 1) {
+    const [first] = objects;
+    result1 = first;
+  }
+  if (objects.length === 2) {
+    const [first, second] = objects;
+    const array1 = Object.entries(first);
+    const array2 = Object.entries(second);
+    const result = Object.assign(first, second);
+    const res = Object.entries(result);
+
+    for (let i = 0; i < array1.length; i += 1) {
+      for (let j = 0; j < array2.length; j += 1) {
+        if (array1[i][0] === array2[j][0]) {
+          const sum = array1[i][1] + array2[j][1];
+          const keyObject = array1[i][0];
+          res.map((item, index) =>
+            item[0] === keyObject
+              ? res.splice(index, 1, [array1[i][0], sum])
+              : 0
+          );
+        }
+      }
+    }
+    result1 = Object.fromEntries(res);
+  }
+  return result1;
 }
 
 /**
@@ -136,8 +166,19 @@ function makeImmutable(obj) {
  *    makeWord({ a: [0, 1], b: [2, 3], c: [4, 5] }) => 'aabbcc'
  *    makeWord({ H:[0], e: [1], l: [2, 3, 8], o: [4, 6], W:[5], r:[7], d:[9]}) => 'HelloWorld'
  */
-function makeWord(/* lettersObject */) {
-  throw new Error('Not implemented');
+function makeWord(lettersObject) {
+  const valuesArr = Object.values(lettersObject).flat();
+  const array1 = new Array(valuesArr.length);
+  Object.entries(lettersObject).forEach(([key, value]) => {
+    for (let i = 0; i < value.length; i += 1) {
+      for (let j = 0; j < array1.length; j += 1) {
+        if (value[i] === j) {
+          array1.splice(j, 1, key);
+        }
+      }
+    }
+  });
+  return array1.join('');
 }
 
 /**
@@ -154,8 +195,28 @@ function makeWord(/* lettersObject */) {
  *    sellTickets([25, 25, 50]) => true
  *    sellTickets([25, 100]) => false (The seller does not have enough money to give change.)
  */
-function sellTickets(/* queue */) {
-  throw new Error('Not implemented');
+function sellTickets(queue) {
+  let result;
+  let count = 0;
+  if (queue.length === 0) {
+    result = true;
+  }
+  for (let i = 0; i < queue.length; i += 1) {
+    if (queue[i] === 25) {
+      count += 25;
+      result = true;
+    }
+    if (queue[i] > 25) {
+      const res = queue[i] - 25;
+      if (res < count) {
+        count -= queue[i];
+        result = true;
+      } else {
+        result = false;
+      }
+    }
+  }
+  return result;
 }
 
 /**
@@ -235,8 +296,15 @@ function fromJSON(/* proto, json */) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-function sortCitiesArray(/* arr */) {
-  throw new Error('Not implemented');
+function sortCitiesArray(arr) {
+  arr.sort((a, b) => {
+    if (a.country < b.country) return -1;
+    if (a.country === b.country) {
+      if (a.city < b.city) return -1;
+    }
+    return arr;
+  });
+  return arr;
 }
 
 /**
